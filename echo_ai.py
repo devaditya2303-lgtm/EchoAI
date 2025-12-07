@@ -1,95 +1,74 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
-from duckduckgo_search import DDGS
-from pydantic import BaseModel
-import pathlib
+from flask import Flask, request, jsonify
+import requests
+from bs4 import BeautifulSoup
 
-# ---------------------------------------------------------
-# TEMPLATE ENGINE SETUP
-# ---------------------------------------------------------
-BASE_DIR = pathlib.Path(__file__).resolve().parent
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+app = Flask(__name__)
 
-# ---------------------------------------------------------
-# FASTAPI APP
-# ---------------------------------------------------------
-app = FastAPI(title="EchoAI")
+# ---------------------------
+# Google Search Scraper
+# ---------------------------
+def google_answer(query):
+    try:
+        url = "https://www.google.com/search?q=" + query.replace(" ", "+")
+        headers = {"User-Agent": "Mozilla/5.0"}
+        html = requests.get(url, headers=headers)
+        soup = BeautifulSoup(html.text, "html.parser")
 
-# ---------------------------------------------------------
-# INPUT MODEL
-# ---------------------------------------------------------
-class Query(BaseModel):
-    query: str
-    mode: str  # "auto", "search", "chat"
+        # Try to extract Google's answer box
+        answer = soup.find("div", class_="BNeawe").text
+        return answer
 
-# ---------------------------------------------------------
-# SEARCH MODE (DuckDuckGo)
-# ---------------------------------------------------------
-def search_google_free(query: str):
-    """Uses DuckDuckGo search (free, zero cost)."""
-    with DDGS() as ddgs:
-        results = ddgs.text(query, max_results=3)
-        return results
+    except:
+        return "I tried checking Google, macha… but I couldn't find it 🥲"
 
-# ---------------------------------------------------------
-# CHAT MODE (Simple AI reply)
-# ---------------------------------------------------------
-def chat_response(user_msg: str):
-    # You can upgrade this later with a local LLM
-    return f"EchoAI 🤖: Haha nice! You said — '{user_msg}'. I'm still learning to chat like a human!"
 
-# ---------------------------------------------------------
-# AUTO ROUTING
-# ---------------------------------------------------------
-def auto_route(query: str):
-    academic_keywords = [
-        "calculate", "solve", "define", "explain", "what is",
-        "derivative", "chemistry", "physics", "formula",
-        "math", "who is", "where is", "history", "jee", "neet"
-    ]
+# ---------------------------
+# EchoAI Brain
+# ---------------------------
+def echo_ai_reply(message):
+    message_low = message.lower()
 
-    for word in academic_keywords:
-        if word in query.lower():
-            return "search"
+    # Human-like fun responses (not from Google)
+    if "hi" in message_low or "hello" in message_low:
+        return "Hi machaaaa 😎🔥 what’s cooking?"
 
-    return "chat"
+    if "who are you" in message_low:
+        return "I'm EchoAI, your goofy corporate-grade AI companion 🤖💼✨"
 
-# ---------------------------------------------------------
-# API ENDPOINT FOR CHAT / SEARCH
-# ---------------------------------------------------------
-@app.post("/query")
-async def answer(q: Query):
-    query = q.query
-    mode = q.mode
+    if "love" in message_low:
+        return "Ayy macha… love is like biryani—layers and surprises 😘🍛"
 
-    # Auto mode routing
-    if mode == "auto":
-        mode = auto_route(query)
+    # If it's a study / math / knowledge question → use Google
+    if "what" in message_low or "why" in message_low or "how" in message_low or any(x.isdigit() for x in message_low):
+        return google_answer(message)
 
-    # SEARCH MODE
-    if mode == "search":
-        results = search_google_free(query)
-        return JSONResponse({
-            "route": "search",
-            "answer": "Here’s what I found online:",
-            "sources": results
-        })
+    # Default human-like response
+    return "Macha I didn’t get that 😅 say it again in simple words!"
 
-    # CHAT MODE
-    if mode == "chat":
-        reply = chat_response(query)
-        return JSONResponse({
-            "route": "chat",
-            "answer": reply
-        })
 
-    # DEFAULT CASE
-    return JSONResponse({"answer": "Unknown mode!"})
+# ---------------------------
+# Flask Route (API)
+# ---------------------------
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_msg = request.json.get("message", "")
 
-# ---------------------------------------------------------
-# HOMEPAGE ROUTE (SERVES index.html)
-# ---------------------------------------------------------
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    reply = echo_ai_reply(user_msg)
+
+    return jsonify({
+        "user": user_msg,
+        "echo_ai": reply
+    })
+
+
+# Home route
+@app.route("/")
+def home():
+    return "EchoAI is LIVE machaaaa! Use POST /chat to talk 🤖🔥"
+
+
+# ---------------------------
+# Run locally
+# ---------------------------
+if __name__ == "__main__":
+    app.run(debug=True)
