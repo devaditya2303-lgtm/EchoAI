@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+duckduckgo_search
+pydantic
+jinja2
