@@ -1,5 +1,4 @@
-fastapi
-uvicorn[standard]
-duckduckgo_search
-pydantic
-jinja2
+flask
+requests
+beautifulsoup4
+gunicorn
