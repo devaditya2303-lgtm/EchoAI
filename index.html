@@ -1,28 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AstroAI</title>
+  <meta charset="UTF-8">
+  <title>AstroAI 🤖✨</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 40px;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 600px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .chatbox {
+      width: 400px;
+      background: #020617;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      padding: 15px;
+      background: #1e293b;
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    .messages {
+      padding: 15px;
+      flex: 1;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    .msg {
+      margin-bottom: 10px;
+    }
+    .user {
+      text-align: right;
+      color: #38bdf8;
+    }
+    .bot {
+      text-align: left;
+      color: #a7f3d0;
+    }
+    .input-area {
+      display: flex;
+      border-top: 1px solid #1e293b;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #22c55e;
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #16a34a;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>AstroAI 🤖✨</h1>
-    <p>This is a Python-based AI project.</p>
-    <p><b>Note:</b> GitHub Pages cannot run Python.</p>
-    <p>To use AstroAI, clone the repo and run <code>app.py</code> locally.</p>
+
+<div class="chatbox">
+  <div class="header">AstroAI 🤖✨</div>
+  <div class="messages" id="messages">
+    <div class="msg bot">Hello 🌌 I am AstroAI. Speak.</div>
   </div>
+  <div class="input-area">
+    <input id="userInput" type="text" placeholder="Type here..." />
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+  const messages = document.getElementById("messages");
+  const input = document.getElementById("userInput");
+
+  function send() {
+    const text = input.value.trim();
+    if (text === "") return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    setTimeout(() => {
+      addMessage(getReply(text), "bot");
+    }, 500);
+  }
+
+  function addMessage(text, sender) {
+    const div = document.createElement("div");
+    div.className = "msg " + sender;
+    div.innerText = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function getReply(text) {
+    text = text.toLowerCase();
+
+    if (text.includes("hello") || text.includes("hi"))
+      return "Hello there ✨";
+
+    if (text.includes("who are you"))
+      return "I am AstroAI — gentle answers, always by your side 🌙";
+
+    if (text.includes("sad"))
+      return "Even stars feel lonely sometimes. This too shall pass 🌌";
+
+    if (text.includes("love"))
+      return "Love is the universe trying to understand itself ❤️";
+
+    return randomReply();
+  }
+
+  function randomReply() {
+    const replies = [
+      "Tell me more 🌠",
+      "Interesting thought 🤔",
+      "The universe listens patiently ✨",
+      "Old wisdom says: pause and breathe 🌿",
+      "I hear you 🌙"
+    ];
+    return replies[Math.floor(Math.random() * replies.length)];
+  }
+
+  input.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") send();
+  });
+</script>
+
 </body>
 </html>
