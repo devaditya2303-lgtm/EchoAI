@@ -1,195 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AstroAI 🔮</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #1e1b4b, #020617);
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .chat {
-      width: 420px;
-      height: 600px;
-      background: #020617;
-      border-radius: 16px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.7);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .header {
-      background: linear-gradient(90deg, #7c3aed, #22d3ee);
-      color: black;
-      padding: 15px;
-      text-align: center;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    .messages {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-
-    .msg {
-      margin-bottom: 12px;
-      line-height: 1.4;
-    }
-
-    .user {
-      text-align: right;
-      color: #38bdf8;
-    }
-
-    .bot {
-      text-align: left;
-      color: #a7f3d0;
-    }
-
-    .input-area {
-      display: flex;
-      border-top: 1px solid #1e293b;
-    }
-
-    input {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      outline: none;
-      background: #020617;
-      color: #e5e7eb;
-      font-size: 14px;
-    }
-
-    button {
-      padding: 12px 18px;
-      border: none;
-      background: #22c55e;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #16a34a;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>AstroAI 🤖✨</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    margin:0;
+    font-family:"Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #0b1a2d, #000814);
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.chatbox {
+    width:95%;
+    max-width:420px;
+    height:90vh;
+    background: linear-gradient(180deg, #081a2f, #020b18);
+    border-radius:18px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:0 0 40px rgba(0,255,255,0.15);
+}
+.header {
+    text-align:center;
+    padding:15px;
+    font-size:20px;
+    font-weight:bold;
+    background: rgba(255,255,255,0.05);
+}
+.messages {
+    flex:1;
+    padding:15px;
+    overflow-y:auto;
+}
+.msg {
+    max-width:75%;
+    margin-bottom:12px;
+    padding:10px 14px;
+    border-radius:12px;
+    line-height:1.4;
+    animation:fadeIn 0.3s ease;
+}
+.user { background:#00b4d8; color:#000; margin-left:auto; border-bottom-right-radius:2px; }
+.bot { background:#1c2541; color:#b8f3ff; margin-right:auto; border-bottom-left-radius:2px; }
+.input-area { display:flex; padding:10px; background: rgba(255,255,255,0.05);}
+input { flex:1; padding:10px; border-radius:8px; border:none; outline:none; font-size:14px;}
+button { margin-left:8px; padding:10px 16px; border-radius:8px; border:none; background:#00ff9c; font-weight:bold; cursor:pointer;}
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+</style>
 </head>
 <body>
-
-<div class="chat">
-  <div class="header">AstroAI 🔮 Astrology Guide</div>
-
-  <div class="messages" id="messages">
-    <div class="msg bot">
-      Welcome 🌌 I am AstroAI.<br>
-      Tell me your zodiac sign or ask for today’s horoscope.
+<div class="chatbox">
+    <div class="header">AstroAI 🤖✨</div>
+    <div class="messages" id="messages">
+        <div class="msg bot">
+            Hello 🌙 I am AstroAI.<br>
+            Tell me your zodiac sign or ask about today’s horoscope ✨
+        </div>
     </div>
-  </div>
-
-  <div class="input-area">
-    <input id="input" type="text" placeholder="Type Aries, Leo, today horoscope..." />
-    <button onclick="send()">Send</button>
-  </div>
+    <div class="input-area">
+        <input id="userInput" placeholder="Type here..." />
+        <button onclick="send()">Send</button>
+    </div>
 </div>
 
 <script>
-  const messages = document.getElementById("messages");
-  const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+const input = document.getElementById("userInput");
 
-  function send() {
-    const text = input.value.trim();
-    if (text === "") return;
+const zodiacDescriptions = {
+    aries: "Aries ♈ — Bold, fearless, born leaders. Fire fuels your ambition.",
+    taurus: "Taurus ♉ — Patient, loyal, lovers of comfort and stability.",
+    gemini: "Gemini ♊ — Curious minds, fast talkers, masters of adaptability.",
+    cancer: "Cancer ♋ — Emotional, protective, deeply intuitive souls.",
+    leo: "Leo ♌ — Natural stars, confident, warm-hearted leaders.",
+    virgo: "Virgo ♍ — Logical, perfection seekers, silent warriors.",
+    libra: "Libra ♎ — Balance lovers, charming, peace-driven minds.",
+    scorpio: "Scorpio ♏ — Intense, mysterious, powerfully emotional.",
+    sagittarius: "Sagittarius ♐ — Freedom lovers, explorers, truth seekers.",
+    capricorn: "Capricorn ♑ — Disciplined, ambitious, builders of legacy.",
+    aquarius: "Aquarius ♒ — Visionaries, rebels, thinkers ahead of time.",
+    pisces: "Pisces ♓ — Dreamers, emotional healers, spiritually deep."
+};
 
-    addMessage(text, "user");
-    input.value = "";
+const dailyHoroscopes = {
+    aries: [
+        "Today is perfect to take bold steps 🌟",
+        "Energy is high, focus on leadership 🔥",
+        "Avoid arguments, channel your passion positively 💪"
+    ],
+    taurus: [
+        "Patience pays off today 🍃",
+        "Financial decisions look favorable 💰",
+        "Take time to enjoy comfort and nature 🌿"
+    ],
+    gemini: [
+        "Communication opens doors today ✨",
+        "Curiosity leads to learning something new 📖",
+        "Stay flexible; plans may change quickly ⚡"
+    ],
+    cancer: [
+        "Family brings warmth and insight 🌙",
+        "Trust your intuition when making decisions 🧘",
+        "Emotions are high; meditate to stay calm 🌊"
+    ],
+    leo: [
+        "Shine bright and lead confidently 🦁",
+        "People are drawn to your energy today 🌟",
+        "Avoid ego clashes; focus on teamwork 🤝"
+    ],
+    virgo: [
+        "Organization brings peace and clarity 📘",
+        "Small details matter; double-check your work ✅",
+        "Helping others will bring satisfaction ❤️"
+    ],
+    libra: [
+        "Seek balance and harmony ⚖️",
+        "Partnerships can be rewarding today 🤝",
+        "Avoid indecision; trust your instincts 🌟"
+    ],
+    scorpio: [
+        "Intensity works in your favor 🔥",
+        "Use your intuition for tricky situations 🦂",
+        "Avoid secrecy; transparency helps today 🌌"
+    ],
+    sagittarius: [
+        "Adventure awaits; explore a new idea 🌍",
+        "Learning brings new opportunities 📖",
+        "Optimism is your strongest ally today 🌟"
+    ],
+    capricorn: [
+        "Focus on long-term goals 🏔️",
+        "Discipline pays off; stay consistent ✅",
+        "Collaboration with others may bring progress 🤝"
+    ],
+    aquarius: [
+        "Innovation and ideas flourish 💡",
+        "Connect with like-minded people today 🌟",
+        "Be open to new perspectives and insights 🧠"
+    ],
+    pisces: [
+        "Creativity flows; start a new project 🎨",
+        "Emotional clarity comes with reflection 🌊",
+        "Help someone today; it will inspire you 💖"
+    ]
+};
 
-    setTimeout(() => {
-      addMessage(getAstroReply(text), "bot");
-    }, 500);
-  }
-
-  function addMessage(text, sender) {
+function addMessage(text, type){
     const div = document.createElement("div");
-    div.className = "msg " + sender;
-    div.innerText = text;
+    div.className = "msg " + type;
+    div.innerHTML = text;
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
-  }
-
-  function getAstroReply(text) {
-  function getAstroReply(text) {
-  text = text.toLowerCase();
-
-  // normalize common spelling mistakes
-  if (text.includes("pise") || text.includes("pisec") || text.includes("pices"))
-    text = "pisces";
-
-  if (text.includes("i am"))
-    text = text.replace("i am", "").trim();
-
-  if (text.includes("tell about"))
-    text = text.replace("tell about", "").trim();
-
-  if (text.includes("pisces"))
-    return "♓ Pisces: Deeply intuitive, emotional, and creative. Today favors calm thinking and self-care 🌊";
-
-  if (text.includes("aries"))
-    return "♈ Aries: Bold and energetic. Action brings results 🔥";
-
-  if (text.includes("leo"))
-    return "♌ Leo: Leadership shines today. Confidence attracts success 🦁";
-
-  if (text.includes("hello") || text.includes("hi"))
-    return "Hello there ✨ Speak freely.";
-
-  return randomWisdom();
 }
 
+function send(){
+    const text = input.value.trim();
+    if(!text) return;
+    addMessage(text,"user");
+    input.value = "";
+    setTimeout(()=> reply(text.toLowerCase()), 400);
+}
 
-    if (text.includes("today") || text.includes("horoscope"))
-      return dailyMessage();
+function reply(text){
+    // detect if user asks "tell about [sign]"
+    for(let sign in zodiacDescriptions){
+        if(text.includes(sign)){
+            if(text.includes("today") || text.includes("horoscope")){
+                // daily horoscope
+                const daily = dailyHoroscopes[sign];
+                const msg = daily[Math.floor(Math.random()*daily.length)];
+                addMessage(`${sign.charAt(0).toUpperCase()+sign.slice(1)} ♈ — ${msg}`, "bot");
+            } else {
+                // description
+                addMessage(zodiacDescriptions[sign], "bot");
+            }
+            return;
+        }
+    }
+    if(text.includes("hello") || text.includes("hi")){
+        addMessage("Hello ✨ The universe hears you 🌙", "bot");
+    } else if(text.includes("who are you")){
+        addMessage("I am AstroAI 🤖 — a guide built on ancient zodiac wisdom.", "bot");
+    } else {
+        addMessage("Type your zodiac sign 🌌 (like Pisces, Leo, Virgo) or ask for 'today horoscope'", "bot");
+    }
+}
 
-    return randomWisdom();
-  }
-
-  function dailyMessage() {
-    const msgs = [
-      "Today favors patience and calm thinking 🌿",
-      "A good day for self-reflection 🌙",
-      "Avoid unnecessary arguments today ☮️",
-      "Learning and growth are highlighted 📖",
-      "Listen more, react less ✨"
-    ];
-    return msgs[Math.floor(Math.random() * msgs.length)];
-  }
-
-  function randomWisdom() {
-    const wisdom = [
-      "Stars advise, effort decides 🌌",
-      "Silence often holds the answer 🌿",
-      "Time reveals hidden truths ⏳",
-      "Calm mind, strong destiny 🧘",
-      "Walk steady, not fast ✨"
-    ];
-    return wisdom[Math.floor(Math.random() * wisdom.length)];
-  }
-
-  input.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") send();
-  });
+input.addEventListener("keydown",e=>{
+    if(e.key==="Enter") send();
+});
 </script>
-
 </body>
 </html>
