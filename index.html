@@ -2,70 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AstroAI 🤖✨</title>
+  <title>AstroAI 🔮</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e1b4b, #020617);
       color: #e5e7eb;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
-    .chatbox {
-      width: 400px;
+
+    .chat {
+      width: 420px;
+      height: 600px;
       background: #020617;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.7);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
+
     .header {
+      background: linear-gradient(90deg, #7c3aed, #22d3ee);
+      color: black;
       padding: 15px;
-      background: #1e293b;
-      border-radius: 12px 12px 0 0;
       text-align: center;
       font-weight: bold;
+      letter-spacing: 1px;
     }
+
     .messages {
-      padding: 15px;
       flex: 1;
+      padding: 15px;
       overflow-y: auto;
       font-size: 14px;
     }
+
     .msg {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      line-height: 1.4;
     }
+
     .user {
       text-align: right;
       color: #38bdf8;
     }
+
     .bot {
       text-align: left;
       color: #a7f3d0;
     }
+
     .input-area {
       display: flex;
       border-top: 1px solid #1e293b;
     }
+
     input {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border: none;
       outline: none;
       background: #020617;
       color: #e5e7eb;
+      font-size: 14px;
     }
+
     button {
-      padding: 10px 15px;
+      padding: 12px 18px;
       border: none;
       background: #22c55e;
       color: black;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
+
     button:hover {
       background: #16a34a;
     }
@@ -73,20 +88,25 @@
 </head>
 <body>
 
-<div class="chatbox">
-  <div class="header">AstroAI 🤖✨</div>
+<div class="chat">
+  <div class="header">AstroAI 🔮 Astrology Guide</div>
+
   <div class="messages" id="messages">
-    <div class="msg bot">Hello 🌌 I am AstroAI. Speak.</div>
+    <div class="msg bot">
+      Welcome 🌌 I am AstroAI.<br>
+      Tell me your zodiac sign or ask for today’s horoscope.
+    </div>
   </div>
+
   <div class="input-area">
-    <input id="userInput" type="text" placeholder="Type here..." />
+    <input id="input" type="text" placeholder="Type Aries, Leo, today horoscope..." />
     <button onclick="send()">Send</button>
   </div>
 </div>
 
 <script>
   const messages = document.getElementById("messages");
-  const input = document.getElementById("userInput");
+  const input = document.getElementById("input");
 
   function send() {
     const text = input.value.trim();
@@ -96,7 +116,7 @@
     input.value = "";
 
     setTimeout(() => {
-      addMessage(getReply(text), "bot");
+      addMessage(getAstroReply(text), "bot");
     }, 500);
   }
 
@@ -108,33 +128,71 @@
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function getReply(text) {
+  function getAstroReply(text) {
     text = text.toLowerCase();
 
-    if (text.includes("hello") || text.includes("hi"))
-      return "Hello there ✨";
+    if (text.includes("aries"))
+      return "♈ Aries: Courage flows today. Take initiative, but avoid anger 🔥";
 
-    if (text.includes("who are you"))
-      return "I am AstroAI — gentle answers, always by your side 🌙";
+    if (text.includes("taurus"))
+      return "♉ Taurus: Stability is your strength. Financial matters look steady 🌱";
 
-    if (text.includes("sad"))
-      return "Even stars feel lonely sometimes. This too shall pass 🌌";
+    if (text.includes("gemini"))
+      return "♊ Gemini: Communication brings opportunity. Speak with clarity ✨";
 
-    if (text.includes("love"))
-      return "Love is the universe trying to understand itself ❤️";
+    if (text.includes("cancer"))
+      return "♋ Cancer: Emotions deepen wisdom. Family brings comfort 🌙";
 
-    return randomReply();
+    if (text.includes("leo"))
+      return "♌ Leo: Leadership shines. Confidence attracts success 🦁";
+
+    if (text.includes("virgo"))
+      return "♍ Virgo: Organization brings peace. Small details matter 📘";
+
+    if (text.includes("libra"))
+      return "♎ Libra: Balance over conflict. Choose harmony ⚖️";
+
+    if (text.includes("scorpio"))
+      return "♏ Scorpio: Intuition is sharp. Trust your inner voice 🦂";
+
+    if (text.includes("sagittarius"))
+      return "♐ Sagittarius: Learning opens doors. Adventure awaits 🏹";
+
+    if (text.includes("capricorn"))
+      return "♑ Capricorn: Discipline rewards you. Progress is slow but sure 🏔️";
+
+    if (text.includes("aquarius"))
+      return "♒ Aquarius: New ideas spark growth. Think freely 💡";
+
+    if (text.includes("pisces"))
+      return "♓ Pisces: Creativity flows. Follow your dreams 🌊";
+
+    if (text.includes("today") || text.includes("horoscope"))
+      return dailyMessage();
+
+    return randomWisdom();
   }
 
-  function randomReply() {
-    const replies = [
-      "Tell me more 🌠",
-      "Interesting thought 🤔",
-      "The universe listens patiently ✨",
-      "Old wisdom says: pause and breathe 🌿",
-      "I hear you 🌙"
+  function dailyMessage() {
+    const msgs = [
+      "Today favors patience and calm thinking 🌿",
+      "A good day for self-reflection 🌙",
+      "Avoid unnecessary arguments today ☮️",
+      "Learning and growth are highlighted 📖",
+      "Listen more, react less ✨"
     ];
-    return replies[Math.floor(Math.random() * replies.length)];
+    return msgs[Math.floor(Math.random() * msgs.length)];
+  }
+
+  function randomWisdom() {
+    const wisdom = [
+      "Stars advise, effort decides 🌌",
+      "Silence often holds the answer 🌿",
+      "Time reveals hidden truths ⏳",
+      "Calm mind, strong destiny 🧘",
+      "Walk steady, not fast ✨"
+    ];
+    return wisdom[Math.floor(Math.random() * wisdom.length)];
   }
 
   input.addEventListener("keypress", function(e) {
