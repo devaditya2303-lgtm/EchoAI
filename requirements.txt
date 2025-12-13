@@ -1,2 +1,0 @@
-# No external libraries required
-# Built with pure Python power 💪
