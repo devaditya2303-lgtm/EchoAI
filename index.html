@@ -129,43 +129,34 @@
   }
 
   function getAstroReply(text) {
-    text = text.toLowerCase();
+  function getAstroReply(text) {
+  text = text.toLowerCase();
 
-    if (text.includes("aries"))
-      return "♈ Aries: Courage flows today. Take initiative, but avoid anger 🔥";
+  // normalize common spelling mistakes
+  if (text.includes("pise") || text.includes("pisec") || text.includes("pices"))
+    text = "pisces";
 
-    if (text.includes("taurus"))
-      return "♉ Taurus: Stability is your strength. Financial matters look steady 🌱";
+  if (text.includes("i am"))
+    text = text.replace("i am", "").trim();
 
-    if (text.includes("gemini"))
-      return "♊ Gemini: Communication brings opportunity. Speak with clarity ✨";
+  if (text.includes("tell about"))
+    text = text.replace("tell about", "").trim();
 
-    if (text.includes("cancer"))
-      return "♋ Cancer: Emotions deepen wisdom. Family brings comfort 🌙";
+  if (text.includes("pisces"))
+    return "♓ Pisces: Deeply intuitive, emotional, and creative. Today favors calm thinking and self-care 🌊";
 
-    if (text.includes("leo"))
-      return "♌ Leo: Leadership shines. Confidence attracts success 🦁";
+  if (text.includes("aries"))
+    return "♈ Aries: Bold and energetic. Action brings results 🔥";
 
-    if (text.includes("virgo"))
-      return "♍ Virgo: Organization brings peace. Small details matter 📘";
+  if (text.includes("leo"))
+    return "♌ Leo: Leadership shines today. Confidence attracts success 🦁";
 
-    if (text.includes("libra"))
-      return "♎ Libra: Balance over conflict. Choose harmony ⚖️";
+  if (text.includes("hello") || text.includes("hi"))
+    return "Hello there ✨ Speak freely.";
 
-    if (text.includes("scorpio"))
-      return "♏ Scorpio: Intuition is sharp. Trust your inner voice 🦂";
+  return randomWisdom();
+}
 
-    if (text.includes("sagittarius"))
-      return "♐ Sagittarius: Learning opens doors. Adventure awaits 🏹";
-
-    if (text.includes("capricorn"))
-      return "♑ Capricorn: Discipline rewards you. Progress is slow but sure 🏔️";
-
-    if (text.includes("aquarius"))
-      return "♒ Aquarius: New ideas spark growth. Think freely 💡";
-
-    if (text.includes("pisces"))
-      return "♓ Pisces: Creativity flows. Follow your dreams 🌊";
 
     if (text.includes("today") || text.includes("horoscope"))
       return dailyMessage();
